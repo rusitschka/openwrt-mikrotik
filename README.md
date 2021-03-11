@@ -8,7 +8,7 @@ have Docker installed.
 
 After the script finishes the resulting target builds are
 copied from the Docker image to the `build` folder in the local
-file system.
+file system. The resulting Docker image will be 12G in size and can be deleted after the build finishes.
 
 The whole process takes more than 2h on a modern CPU.
 `make` is not run in parallel due to build stability.
