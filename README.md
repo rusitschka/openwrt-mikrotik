@@ -11,7 +11,7 @@ To build OpenWRT for Mikrotik hAP ac2 execute:
 ```
 ./build.sh hap-ac2
 ```
-And for Mikrotik hAP ac lite: **This currenlty does not work due to a missing [upstream fix](https://github.com/openwrt/openwrt/pull/3348#issuecomment-692530450)!**
+And for Mikrotik hAP ac lite: **This currently does not work due to a missing [upstream fix](https://github.com/openwrt/openwrt/pull/3348#issuecomment-692530450)!**
 ```
 ./build.sh hap-ac-lite
 ```
