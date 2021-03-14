@@ -2,7 +2,7 @@
 
 TARGET="$1"
 IMAGE_NAME="openwrt-$TARGET"
-CONFIG="config-$TARGET.txt"
+CONFIG="configs/$TARGET.txt"
 
 if [ ! -e "$CONFIG" ]
 then
@@ -10,8 +10,17 @@ then
     exit 1
 fi
 
+docker rm $IMAGE_NAME -f || true
 docker rmi $IMAGE_NAME -f || true
-docker build --build-arg CONFIG=$CONFIG -t $IMAGE_NAME .
+docker build -t $IMAGE_NAME .
 TARGET_DIR="build/$TARGET/$(date +'%Y%m%d.%H%M')"
+mkdir -p downloads
 mkdir -p $TARGET_DIR
-docker run --rm -v $PWD/$TARGET_DIR:/build $IMAGE_NAME bash -c "[ -e error.log ] && cat error.log || cp -a /root/openwrt/bin/targets/* /build/"
+docker run -it \
+    --name $IMAGE_NAME \
+    -v $PWD/$TARGET_DIR:/build \
+    -v $PWD/downloads:/root/openwrt/dl/ \
+    -v $PWD/$CONFIG:/root/openwrt/.config-template \
+    $IMAGE_NAME \
+    ./build.sh
+docker rm $IMAGE_NAME

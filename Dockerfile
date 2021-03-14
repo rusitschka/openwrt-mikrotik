@@ -32,20 +32,22 @@ RUN set -eux \
     zlib1g-dev
 
 WORKDIR /root
+ADD https://github.com/openwrt/openwrt/archive/openwrt-21.02.zip /root/openwrt.zip
 RUN set -eux \
-#  ; wget -q https://github.com/openwrt/openwrt/archive/master.zip -O openwrt.zip \
-  ; wget -q https://github.com/openwrt/openwrt/archive/openwrt-21.02.zip -O openwrt.zip \
   ; unzip openwrt.zip \
   ; mv openwrt-* openwrt
 
 WORKDIR /root/openwrt
 RUN set -eux \
-  ; cd /root/openwrt \
   ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
   ; git apply hap-ac2.patch
 
+# RUN set -eux \
+#   ; wget -q https://github.com/openwrt/openwrt/pull/3271.patch -O optional-4k-erase.patch \
+#   ; sed -e 's/^+ \t/+\t/;s/[[:space:]]*$//' -i optional-4k-erase.patch \
+#   ; git apply --reject optional-4k-erase.patch
+
 RUN set -eux \
-  ; cd /root/openwrt \
   ; wget -q https://github.com/openwrt/openwrt/pull/3348.patch -O hap-ac-lite.patch \
   ; git apply hap-ac-lite.patch
 
@@ -53,10 +55,4 @@ RUN set -eux \
   ; ./scripts/feeds update -a \
   ; ./scripts/feeds install -a
 
-ARG CONFIG=missing
-ADD $CONFIG /root/openwrt/.config
-
-ENV FORCE_UNSAFE_CONFIGURE=1
-RUN set -eux \
-  ; make defconfig \
-  ; if make V=s; then echo success; else make V=sc > error.log || true; echo FAILED; fi
+ADD docker-image/build.sh /root/openwrt/

@@ -11,7 +11,7 @@ To build OpenWRT for Mikrotik hAP ac2 execute:
 ```
 ./build.sh hap-ac2
 ```
-And for Mikrotik hAP ac lite:
+And for Mikrotik hAP ac lite: **This currenlty does not work due to a missing [upstream fix](https://github.com/openwrt/openwrt/pull/3348#issuecomment-692530450)!**
 ```
 ./build.sh hap-ac-lite
 ```
@@ -21,5 +21,4 @@ copied from the Docker image to the `build` folder in the local
 file system. The resulting Docker images/containers will be up to
 12G each in size and can be deleted after the build finished.
 
-The whole process takes more than 2h on a modern CPU.
-`make` is not run in parallel due to build stability.
+The whole process takes about 45 minutes on a modern CPU.
