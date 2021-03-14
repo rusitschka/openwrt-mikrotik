@@ -41,15 +41,22 @@ RUN set -eux \
 WORKDIR /root/openwrt
 RUN set -eux \
   ; cd /root/openwrt \
-  ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac.patch \
-  ; git apply hap-ac.patch
+  ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
+  ; git apply hap-ac2.patch
+
+RUN set -eux \
+  ; cd /root/openwrt \
+  ; wget -q https://github.com/openwrt/openwrt/pull/3348.patch -O hap-ac-lite.patch \
+  ; git apply hap-ac-lite.patch
 
 RUN set -eux \
   ; ./scripts/feeds update -a \
   ; ./scripts/feeds install -a
 
+ARG CONFIG=missing
+ADD $CONFIG /root/openwrt/.config
+
 ENV FORCE_UNSAFE_CONFIGURE=1
-ADD config.txt /root/openwrt/.config
 RUN set -eux \
   ; make defconfig \
-  ; if make V=s; then echo success; else make V=sc || true; echo FAILED; fi
+  ; if make V=s; then echo success; else make V=sc > error.log || true; echo FAILED; fi
