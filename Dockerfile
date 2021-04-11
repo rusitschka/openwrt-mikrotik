@@ -42,6 +42,14 @@ RUN set -eux \
   ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
   ; git apply hap-ac2.patch
 
+RUN set -eux \
+  ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
+  ; git apply cap-ac.patch
+
+#ADD cap-ac.patch /root/openwrt/
+#RUN set -eux \
+#  ; git apply cap-ac.patch
+
 # RUN set -eux \
 #   ; wget -q https://github.com/openwrt/openwrt/pull/3271.patch -O optional-4k-erase.patch \
 #   ; sed -e 's/^+ \t/+\t/;s/[[:space:]]*$//' -i optional-4k-erase.patch \
