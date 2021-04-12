@@ -25,7 +25,7 @@ And for Mikrotik hAP ac lite: **This currently does not work due to a missing [u
 ```
 
 After the script finishes the resulting target builds are
-copied from the Docker image to the `build` folder in the local
+copied from the Docker container to the `build` folder in the local
 file system. The resulting Docker images/containers will be up to
 12G each in size and can be deleted after the build finished.
 
