@@ -46,6 +46,10 @@ RUN set -eux \
   ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
   ; git apply cap-ac.patch
 
+RUN set -eux \
+  ; wget -q https://github.com/alaraun/openwrt/pull/1.patch -O cap-ac-patch.patch \
+  ; git apply cap-ac-patch.patch
+
 #ADD cap-ac.patch /root/openwrt/
 #RUN set -eux \
 #  ; git apply cap-ac.patch
