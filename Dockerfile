@@ -1,5 +1,7 @@
 FROM ubuntu
 
+ARG OPENWRT_BRANCH=openwrt-21.02
+
 RUN set -eux \
   ; apt-get update -yqq \
   ; DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
@@ -32,7 +34,7 @@ RUN set -eux \
     zlib1g-dev
 
 WORKDIR /root
-ADD https://github.com/openwrt/openwrt/archive/openwrt-21.02.zip /root/openwrt.zip
+ADD https://github.com/openwrt/openwrt/archive/$OPENWRT_BRANCH.zip /root/openwrt.zip
 RUN set -eux \
   ; unzip openwrt.zip \
   ; mv openwrt-* openwrt

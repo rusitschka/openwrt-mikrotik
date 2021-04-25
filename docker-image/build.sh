@@ -1,5 +1,8 @@
 #!/bin/bash -ex
 
+OPENWRT_VERSION="$1"
+
+echo "$OPENWRT_VERSION" > version
 cp .config-template .config
 export FORCE_UNSAFE_CONFIGURE=1
 make defconfig
@@ -9,4 +12,6 @@ if ! make -j$(nproc) world
 then
     make V=sc world
 fi
-cp -a bin/targets/* /build/
+
+mkdir -p /build/$OPENWRT_VERSION
+cp -a bin/targets/* /build/$OPENWRT_VERSION

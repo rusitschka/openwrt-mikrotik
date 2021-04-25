@@ -12,8 +12,9 @@ fi
 
 docker rm $IMAGE_NAME -f || true
 docker rmi $IMAGE_NAME -f || true
-docker build -t $IMAGE_NAME .
-TARGET_DIR="build/$TARGET/$(date +'%Y%m%d.%H%M')"
+docker build --no-cache -t $IMAGE_NAME .
+TARGET_DIR="build/$TARGET"
+OPENWRT_VERSION="$(date '+%Y-%m-%d-%H-%M-%S')"
 mkdir -p downloads
 mkdir -p $TARGET_DIR
 docker run -it \
@@ -22,5 +23,5 @@ docker run -it \
     -v $PWD/downloads:/root/openwrt/dl/ \
     -v $PWD/$CONFIG:/root/openwrt/.config-template \
     $IMAGE_NAME \
-    ./build.sh
+    ./build.sh $OPENWRT_VERSION
 docker rm $IMAGE_NAME
