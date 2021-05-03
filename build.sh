@@ -21,6 +21,7 @@ docker run -it \
     --name $IMAGE_NAME \
     -v $PWD/$TARGET_DIR:/build \
     -v $PWD/downloads:/root/openwrt/dl/ \
+    -v $PWD/files:/root/openwrt/files/ \
     -v $PWD/$CONFIG:/root/openwrt/.config-template \
     $IMAGE_NAME \
     ./build.sh $OPENWRT_VERSION
