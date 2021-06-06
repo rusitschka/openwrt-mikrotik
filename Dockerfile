@@ -40,9 +40,11 @@ RUN set -eux \
   ; mv openwrt-* openwrt
 
 WORKDIR /root/openwrt
-RUN set -eux \
-  ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
-  ; git apply hap-ac2.patch
+
+# hAP ac2 support is merged into 21.02 and main branch already.
+# RUN set -eux \
+#   ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
+#   ; git apply hap-ac2.patch
 
 RUN set -eux \
   ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
@@ -51,10 +53,6 @@ RUN set -eux \
 RUN set -eux \
   ; wget -q https://github.com/alaraun/openwrt/pull/1.patch -O cap-ac-patch.patch \
   ; git apply cap-ac-patch.patch
-
-#ADD cap-ac.patch /root/openwrt/
-#RUN set -eux \
-#  ; git apply cap-ac.patch
 
 # RUN set -eux \
 #   ; wget -q https://github.com/openwrt/openwrt/pull/3271.patch -O optional-4k-erase.patch \
