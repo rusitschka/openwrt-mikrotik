@@ -1,6 +1,7 @@
 FROM ubuntu
 
-ARG OPENWRT_BRANCH=openwrt-21.02
+#ARG OPENWRT_BRANCH=openwrt-21.02
+ARG OPENWRT_VERSION=21.02.0-rc3
 
 RUN set -eux \
   ; apt-get update -yqq \
@@ -34,9 +35,11 @@ RUN set -eux \
     zlib1g-dev
 
 WORKDIR /root
-ADD https://github.com/openwrt/openwrt/archive/$OPENWRT_BRANCH.zip /root/openwrt.zip
+#ADD https://github.com/openwrt/openwrt/archive/$OPENWRT_BRANCH.zip /root/openwrt.zip
+ADD https://github.com/openwrt/openwrt/archive/refs/tags/v$OPENWRT_VERSION.zip /root/openwrt.zip
 RUN set -eux \
   ; unzip openwrt.zip \
+  ; rm openwrt.zip \
   ; mv openwrt-* openwrt
 
 WORKDIR /root/openwrt

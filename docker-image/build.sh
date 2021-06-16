@@ -1,8 +1,9 @@
 #!/bin/bash -ex
 
 OPENWRT_VERSION="$1"
+OPENWRT_BUILD_DATE="$2"
 
-echo "$OPENWRT_VERSION" > version
+echo "$OPENWRT_BUILD_DATE" > version
 cp .config-template .config
 export FORCE_UNSAFE_CONFIGURE=1
 make defconfig
@@ -13,5 +14,5 @@ then
     make V=sc world
 fi
 
-mkdir -p /build/$OPENWRT_VERSION
-cp -a bin/targets/* /build/$OPENWRT_VERSION
+mkdir -p /build/$OPENWRT_BUILD_DATE
+cp -a bin/targets/* /build/$OPENWRT_BUILD_DATE
