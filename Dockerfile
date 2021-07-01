@@ -44,27 +44,28 @@ RUN set -eux \
 
 WORKDIR /root/openwrt
 
-# hAP ac2 support is merged into 21.02 and main branch already.
-# RUN set -eux \
-#   ; wget -q https://github.com/openwrt/openwrt/pull/3037.patch -O hap-ac2.patch \
-#   ; git apply hap-ac2.patch
-
+# cAP ac
 RUN set -eux \
-  ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
+  ; wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
   ; git apply cap-ac.patch
 
-RUN set -eux \
-  ; wget -q https://github.com/alaraun/openwrt/pull/1.patch -O cap-ac-patch.patch \
-  ; git apply cap-ac-patch.patch
+# RUN set -eux \
+#   ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
+#   ; git apply cap-ac.patch
 
+# RUN set -eux \
+#   ; wget -q https://github.com/alaraun/openwrt/pull/1.patch -O cap-ac-patch.patch \
+#   ; git apply cap-ac-patch.patch
+
+# hAP ac lite
 # RUN set -eux \
 #   ; wget -q https://github.com/openwrt/openwrt/pull/3271.patch -O optional-4k-erase.patch \
 #   ; sed -e 's/^+ \t/+\t/;s/[[:space:]]*$//' -i optional-4k-erase.patch \
 #   ; git apply --reject optional-4k-erase.patch
 
-RUN set -eux \
-  ; wget -q https://github.com/openwrt/openwrt/pull/3348.patch -O hap-ac-lite.patch \
-  ; git apply hap-ac-lite.patch
+# RUN set -eux \
+#   ; wget -q https://github.com/openwrt/openwrt/pull/3348.patch -O hap-ac-lite.patch \
+#   ; git apply hap-ac-lite.patch
 
 RUN set -eux \
   ; ./scripts/feeds update -a \
