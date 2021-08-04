@@ -1,7 +1,7 @@
 FROM ubuntu
 
 #ARG OPENWRT_BRANCH=openwrt-21.02
-ARG OPENWRT_VERSION=21.02.0-rc3
+ARG OPENWRT_VERSION=21.02.0-rc4
 
 RUN set -eux \
   ; apt-get update -yqq \
@@ -47,6 +47,7 @@ WORKDIR /root/openwrt
 # cAP ac
 RUN set -eux \
   ; wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
+  ; sed -i 's/passtrough/passthrough/g' cap-ac.patch \
   ; git apply cap-ac.patch
 
 # RUN set -eux \
