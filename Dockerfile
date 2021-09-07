@@ -1,7 +1,7 @@
 FROM ubuntu
 
 #ARG OPENWRT_BRANCH=openwrt-21.02
-ARG OPENWRT_VERSION=21.02.0-rc4
+ARG OPENWRT_VERSION=21.02.0
 
 RUN set -eux \
   ; apt-get update -yqq \
