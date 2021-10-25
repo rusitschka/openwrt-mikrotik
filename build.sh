@@ -1,18 +1,10 @@
 #!/bin/bash -ex
 
-TARGET="$1"
+TARGET="hap-ac2"
 IMAGE_NAME="openwrt-$TARGET"
 CONFIG="configs/$TARGET.txt"
-OPENWRT_VERSION="21.02.0"
+OPENWRT_VERSION="master"
 OPENWRT_BUILD_DATE="$(date '+%Y-%m-%d-%H-%M-%S')"
-
-if [ "$TARGET" = "hap-ac2" ]
-then
-    echo "Downloading and patching hAP ac2 config"
-    curl -sfq https://downloads.openwrt.org/releases/$OPENWRT_VERSION/targets/ipq40xx/mikrotik/config.buildinfo \
-        > $CONFIG
-    cat configs/common.txt >> $CONFIG
-fi
 
 if [ ! -e "$CONFIG" ]
 then
@@ -22,7 +14,10 @@ fi
 
 docker rm $IMAGE_NAME -f || true
 docker rmi $IMAGE_NAME -f || true
-docker build --no-cache -t $IMAGE_NAME .
+docker build \
+    --build-arg OPENWRT_VERSION="$OPENWRT_VERSION" \
+    --build-arg OPENWRT_BUILD_DATE="$OPENWRT_BUILD_DATE" \
+    -t $IMAGE_NAME .
 
 if [ "$2" = "--docker-only" ]
 then
@@ -39,5 +34,5 @@ docker run -it \
     -v $PWD/files:/root/openwrt/files/ \
     -v $PWD/$CONFIG:/root/openwrt/.config-template \
     $IMAGE_NAME \
-    ./build.sh "$OPENWRT_VERSION" "$OPENWRT_BUILD_DATE"
+    ./build.sh
 docker rm $IMAGE_NAME

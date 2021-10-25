@@ -1,8 +1,5 @@
 #!/bin/bash -ex
 
-OPENWRT_VERSION="$1"
-OPENWRT_BUILD_DATE="$2"
-
 echo "$OPENWRT_BUILD_DATE" > version
 cp .config-template .config
 export FORCE_UNSAFE_CONFIGURE=1

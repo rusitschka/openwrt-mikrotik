@@ -1,7 +1,10 @@
 FROM ubuntu
 
-#ARG OPENWRT_BRANCH=openwrt-21.02
-ARG OPENWRT_VERSION=21.02.0
+ARG OPENWRT_VERSION
+ENV OPENWRT_VERSION=${OPENWRT_VERSION}
+
+ARG OPENWRT_BUILD_DATE
+ENV OPENWRT_BUILD_DATE=${OPENWRT_BUILD_DATE}
 
 RUN set -eux \
   ; apt-get update -yqq \
@@ -35,20 +38,31 @@ RUN set -eux \
     zlib1g-dev
 
 WORKDIR /root
-#ADD https://github.com/openwrt/openwrt/archive/$OPENWRT_BRANCH.zip /root/openwrt.zip
-ADD https://github.com/openwrt/openwrt/archive/refs/tags/v$OPENWRT_VERSION.zip /root/openwrt.zip
 RUN set -eux \
-  ; unzip openwrt.zip \
+  ; if [ "$OPENWRT_VERSION" = "master" ] \
+  ; then \
+      URL=https://github.com/openwrt/openwrt/archive/$OPENWRT_VERSION.zip \
+  ; else \
+      URL=https://github.com/openwrt/openwrt/archive/refs/tags/v$OPENWRT_VERSION.zip \
+  ; fi \
+  ; wget -q $URL -O openwrt.zip \
+  ; unzip -q openwrt.zip \
   ; rm openwrt.zip \
   ; mv openwrt-* openwrt
 
 WORKDIR /root/openwrt
 
-# cAP ac
+# Ipq40xx mikrotik rollup
 RUN set -eux \
-  ; wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
-  ; sed -i 's/passtrough/passthrough/g' cap-ac.patch \
-  ; git apply cap-ac.patch
+  ; ls -la \
+  ; wget -q https://github.com/john-tho/openwrt/pull/2.patch -O ipq40xx_mikrotik_rollup.patch \
+  ; git apply ipq40xx_mikrotik_rollup.patch
+
+# # cAP ac
+# RUN set -eux \
+#   ; wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
+#   ; sed -i 's/passtrough/passthrough/g' cap-ac.patch \
+#   ; git apply cap-ac.patch
 
 # RUN set -eux \
 #   ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \

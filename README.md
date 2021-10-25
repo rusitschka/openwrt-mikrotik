@@ -1,30 +1,20 @@
 # openwrt-mikrotik-hap-ac2
 
 This script will patch current
-[21.02 branch of OpenWRT](https://github.com/openwrt/openwrt/tree/openwrt-21.02) with
-[Mikrotik cAP ac from vibornoff](https://github.com/vibornoff/openwrt/tree/mikrotik-cap-ac-wip).
+[master branch of OpenWRT](https://github.com/openwrt/openwrt/tree/master) with
+[Ipq40xx mikrotik rollup squash from john-tho](https://github.com/john-tho/openwrt/pull/2).
 
 It's all done through Docker images/containers so you need to
 have Docker installed.
 
-OpenWRT 21.02 already comes with hAP ac2 support built-in. The name of this project has
+OpenWRT >= 21.02 already comes with hAP ac2 support built-in. The name of this project has
 historic reasons. When I started this project hAP ac2 support had to patched into official
-OpenWRT source. Nowadays cAP ac support is still missing from 21.02 which still requires a
-patch.
+OpenWRT source. But nowadays cAP ac support (and others) is still missing from master and
+still requires a patch.
 
-To build OpenWRT for Mikrotik hAP ac2 execute:
+To build OpenWRT for lots of Mikrotik devices execute:
 ```
-./build.sh hap-ac2
-```
-
-For Mikrotik cAP ac execute:
-```
-./build.sh cap-ac
-```
-
-And for Mikrotik hAP ac lite: **This currently does not work due to a missing [upstream fix](https://github.com/openwrt/openwrt/pull/3348#issuecomment-692530450)!**
-```
-./build.sh hap-ac-lite
+./build.sh
 ```
 
 After the script finishes the resulting target builds are
