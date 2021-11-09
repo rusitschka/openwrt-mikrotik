@@ -39,24 +39,28 @@ RUN set -eux \
 
 WORKDIR /root
 RUN set -eux \
-  ; if [ "$OPENWRT_VERSION" = "master" ] \
+  ; git clone https://github.com/openwrt/openwrt.git \
+  ; cd openwrt \
+  ; git config --global user.email "noreply@example.com" \
+  ; git config --global user.name "No Name" \
+  ; if [ "$OPENWRT_VERSION" != "master" ] \
   ; then \
-      URL=https://github.com/openwrt/openwrt/archive/$OPENWRT_VERSION.zip \
-  ; else \
-      URL=https://github.com/openwrt/openwrt/archive/refs/tags/v$OPENWRT_VERSION.zip \
-  ; fi \
-  ; wget -q $URL -O openwrt.zip \
-  ; unzip -q openwrt.zip \
-  ; rm openwrt.zip \
-  ; mv openwrt-* openwrt
+      git checkout v$OPENWRT_VERSION \
+  ; fi
 
 WORKDIR /root/openwrt
 
 # Ipq40xx mikrotik rollup
 RUN set -eux \
-  ; ls -la \
-  ; wget -q https://github.com/john-tho/openwrt/pull/2.patch -O ipq40xx_mikrotik_rollup.patch \
-  ; git apply ipq40xx_mikrotik_rollup.patch
+  ; if [ "$OPENWRT_VERSION" = "master" ] \
+  ; then \
+      wget -q https://github.com/john-tho/openwrt/pull/2.patch -O ipq40xx_mikrotik_rollup.patch \
+  ;   git am ipq40xx_mikrotik_rollup.patch \
+  ; else \
+      wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
+  ;   sed -i 's/passtrough/passthrough/g' cap-ac.patch \
+  ;   git am cap-ac.patch \
+  ; fi
 
 # # cAP ac
 # RUN set -eux \

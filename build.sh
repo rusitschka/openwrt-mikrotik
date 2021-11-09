@@ -3,7 +3,7 @@
 TARGET="hap-ac2"
 IMAGE_NAME="openwrt-$TARGET"
 CONFIG="configs/$TARGET.txt"
-OPENWRT_VERSION="master"
+OPENWRT_VERSION="${OPENWRT_VERSION:-master}"
 OPENWRT_BUILD_DATE="$(date '+%Y-%m-%d-%H-%M-%S')"
 
 if [ ! -e "$CONFIG" ]
