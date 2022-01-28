@@ -20,7 +20,12 @@ To build OpenWRT for lots of Mikrotik devices execute:
 
 To build a tagged 21.02.x OpenWRT version which supports hAP ac2 and cAP ac use for example:
 ```
-OPENWRT_VERSION=21.02.1 ./build.sh
+OPENWRT_VERSION=v21.02.1 ./build.sh
+```
+
+To build a branch, use the branch name, e.g.:
+```
+OPENWRT_VERSION=openwrt-21.02 ./build.sh
 ```
 
 After the script finishes the resulting target builds are

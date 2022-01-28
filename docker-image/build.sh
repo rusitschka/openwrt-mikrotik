@@ -11,5 +11,6 @@ then
     make V=sc world
 fi
 
-mkdir -p /build/$OPENWRT_BUILD_DATE
-cp -a bin/targets/* /build/$OPENWRT_BUILD_DATE
+TARGET_DIR="/build/${OPENWRT_BUILD_DATE}_${OPENWRT_VERSION}"
+mkdir -p "$TARGET_DIR"
+cp -a bin/targets/* "$TARGET_DIR"

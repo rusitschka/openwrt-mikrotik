@@ -1,14 +1,10 @@
 FROM ubuntu
 
-ARG OPENWRT_VERSION
-ENV OPENWRT_VERSION=${OPENWRT_VERSION}
-
-ARG OPENWRT_BUILD_DATE
-ENV OPENWRT_BUILD_DATE=${OPENWRT_BUILD_DATE}
+WORKDIR /root
 
 RUN set -eux \
   ; apt-get update -yqq \
-  ; DEBIAN_FRONTEND=noninteractive apt-get install -yqq \
+  ; DEBIAN_FRONTEND=noninteractive apt-get install -yqq --no-install-recommends \
     build-essential \
     ccache \
     ecj \
@@ -23,6 +19,7 @@ RUN set -eux \
     libncurses5-dev \
     libncursesw5-dev \
     libssl-dev \
+    make \
     python \
     python2.7-dev \
     python3 \
@@ -35,31 +32,32 @@ RUN set -eux \
     swig \
     time \
     xsltproc \
-    zlib1g-dev
-
-WORKDIR /root
-RUN set -eux \
+    zlib1g-dev \
   ; git clone https://github.com/openwrt/openwrt.git \
-  ; cd openwrt \
   ; git config --global user.email "noreply@example.com" \
-  ; git config --global user.name "No Name" \
-  ; if [ "$OPENWRT_VERSION" != "master" ] \
-  ; then \
-      git checkout v$OPENWRT_VERSION \
-  ; fi
+  ; git config --global user.name "No Name"
 
 WORKDIR /root/openwrt
 
-# Ipq40xx mikrotik rollup
+ARG OPENWRT_VERSION
+ENV OPENWRT_VERSION=${OPENWRT_VERSION}
+
+ARG OPENWRT_BUILD_DATE
+ENV OPENWRT_BUILD_DATE=${OPENWRT_BUILD_DATE}
+
 RUN set -eux \
+  ; git checkout $OPENWRT_VERSION \
   ; if [ "$OPENWRT_VERSION" = "master" ] \
   ; then \
-      wget -q https://github.com/john-tho/openwrt/pull/2.patch -O ipq40xx_mikrotik_rollup.patch \
-  ;   git am ipq40xx_mikrotik_rollup.patch \
+      wget -q https://github.com/john-tho/openwrt/pull/2.patch -O mikrotik.patch \
   ; else \
-      wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
-  ;   sed -i 's/passtrough/passthrough/g' cap-ac.patch \
-  ;   git am cap-ac.patch \
+      wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O mikrotik.patch \
+  ;   sed -i 's/passtrough/passthrough/g' mikrotik.patch \
+  ; fi \
+  ; if ! git am mikrotik.patch \
+  ; then \
+      git am --show-current-patch \
+  ;   exit 1 \
   ; fi
 
 # # cAP ac

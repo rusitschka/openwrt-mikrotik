@@ -15,6 +15,7 @@ fi
 docker rm $IMAGE_NAME -f || true
 docker rmi $IMAGE_NAME -f || true
 docker build \
+    --progress plain \
     --build-arg OPENWRT_VERSION="$OPENWRT_VERSION" \
     --build-arg OPENWRT_BUILD_DATE="$OPENWRT_BUILD_DATE" \
     -t $IMAGE_NAME .
