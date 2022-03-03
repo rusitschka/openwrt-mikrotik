@@ -18,19 +18,22 @@ RUN set -eux \
     libelf-dev \
     libncurses5-dev \
     libncursesw5-dev \
+    libpam-dev \
+    libsnmp-dev \
     libssl-dev \
     make \
     python \
     python2.7-dev \
     python3 \
-    unzip \
-    wget \
+    python3-dev \
     python3-distutils \
     python3-setuptools \
     rsync \
     subversion \
     swig \
     time \
+    unzip \
+    wget \
     xsltproc \
     zlib1g-dev \
   ; git clone https://github.com/openwrt/openwrt.git \
