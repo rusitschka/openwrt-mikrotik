@@ -22,8 +22,6 @@ RUN set -eux \
     libsnmp-dev \
     libssl-dev \
     make \
-    python \
-    python2.7-dev \
     python3 \
     python3-dev \
     python3-distutils \
