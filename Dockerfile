@@ -51,42 +51,17 @@ RUN set -eux \
   ; if [ "$OPENWRT_VERSION" = "master" ] \
   ; then \
       wget -q https://github.com/john-tho/openwrt/pull/2.patch -O mikrotik.patch \
-  ; else \
-      wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O mikrotik.patch \
-  ;   sed -i 's/passtrough/passthrough/g' mikrotik.patch \
   ; fi \
-  ; if ! git am mikrotik.patch \
+  ; if [ -e mikrotik.patch ] && ! git am mikrotik.patch \
   ; then \
       git am --show-current-patch \
   ;   exit 1 \
   ; fi
 
-# # cAP ac
-# RUN set -eux \
-#   ; wget -q https://github.com/openwrt/openwrt/compare/master...vibornoff:mikrotik-cap-ac-wip.patch -O cap-ac.patch \
-#   ; sed -i 's/passtrough/passthrough/g' cap-ac.patch \
-#   ; git apply cap-ac.patch
-
-# RUN set -eux \
-#   ; wget -q https://github.com/openwrt/openwrt/pull/4055.patch -O cap-ac.patch \
-#   ; git apply cap-ac.patch
-
-# RUN set -eux \
-#   ; wget -q https://github.com/alaraun/openwrt/pull/1.patch -O cap-ac-patch.patch \
-#   ; git apply cap-ac-patch.patch
-
-# hAP ac lite
-# RUN set -eux \
-#   ; wget -q https://github.com/openwrt/openwrt/pull/3271.patch -O optional-4k-erase.patch \
-#   ; sed -e 's/^+ \t/+\t/;s/[[:space:]]*$//' -i optional-4k-erase.patch \
-#   ; git apply --reject optional-4k-erase.patch
-
-# RUN set -eux \
-#   ; wget -q https://github.com/openwrt/openwrt/pull/3348.patch -O hap-ac-lite.patch \
-#   ; git apply hap-ac-lite.patch
-
 RUN set -eux \
   ; ./scripts/feeds update -a \
   ; ./scripts/feeds install -a
 
-ADD docker-image/build.sh /root/openwrt/
+ADD docker/entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]

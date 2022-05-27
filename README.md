@@ -13,19 +13,19 @@ historic reasons. When I started this project hAP ac2 support had to patched int
 OpenWRT source. But nowadays cAP ac support (and others) is still missing from master and
 still requires a patch.
 
-To build OpenWRT for lots of Mikrotik devices execute:
+To build OpenWRT for Mikrotik hAP ac2 and cAP ac execute:
 ```
-./build.sh
+./build.sh docker firmware
 ```
 
 To build a tagged 21.02.x OpenWRT version which supports hAP ac2 and cAP ac use for example:
 ```
-OPENWRT_VERSION=v21.02.1 ./build.sh
+OPENWRT_VERSION=v21.02.1 ./build.sh docker firmware
 ```
 
 To build a branch, use the branch name, e.g.:
 ```
-OPENWRT_VERSION=openwrt-21.02 ./build.sh
+OPENWRT_VERSION=openwrt-21.02 ./build.sh docker firmware
 ```
 
 After the script finishes the resulting target builds are
