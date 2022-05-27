@@ -13,12 +13,15 @@ then
 fi
 
 function build_docker {
-    docker rmi $IMAGE_NAME -f || true
+    docker rmi $IMAGE_NAME.build -f || true
     docker build \
         --progress plain \
         --build-arg OPENWRT_VERSION="$OPENWRT_VERSION" \
         --build-arg OPENWRT_BUILD_DATE="$OPENWRT_BUILD_DATE" \
-        -t $IMAGE_NAME .
+        -t $IMAGE_NAME.build .
+    docker rmi $IMAGE_NAME -f || true
+    docker tag $IMAGE_NAME.build $IMAGE_NAME
+    docker rmi $IMAGE_NAME.build -f || true
 }
 
 function run_in_docker {
@@ -41,7 +44,7 @@ function run_in_docker {
 if [ "$1" = "" ]
 then
     echo "Usage: $0 (config|docker|firmware)+"
-    echo "See https://github.com/rusitschka/openwrt-mikrotik-hap-ac2/blob/main/README.md"
+    echo "See https://github.com/rusitschka/openwrt-mikrotik/blob/main/README.md"
     exit 1
 fi
 

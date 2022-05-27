@@ -1,4 +1,4 @@
-# openwrt-mikrotik-hap-ac2
+# openwrt-mikrotik
 
 This script supports building OpenWRT with different patches:
 * Current [master branch of OpenWRT](https://github.com/openwrt/openwrt/tree/master) with
