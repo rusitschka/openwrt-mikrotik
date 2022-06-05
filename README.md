@@ -1,22 +1,37 @@
 # openwrt-mikrotik
 
-This script supports building OpenWRT with different patches:
-* Current [master branch of OpenWRT](https://github.com/openwrt/openwrt/tree/master) with
-[Ipq40xx mikrotik rollup squash from john-tho](https://github.com/john-tho/openwrt/pull/2).
-* 21.02.x version with [vibornoff's cAP ac patches](https://github.com/vibornoff/openwrt/tree/mikrotik-cap-ac-wip).
+This script builds OpenWRT via Docker images/containers, i.e. Docker is your only build dependency.
 
-It's all done through Docker images/containers so you need to
-have Docker installed.
+Supported versions of OpenWRT:
 
-OpenWRT >= 21.02 already comes with hAP ac2 support built-in. The name of this project has
-historic reasons. When I started this project hAP ac2 support had to patched into official
-OpenWRT source. But nowadays cAP ac support (and others) is still missing from master and
-still requires a patch.
+* Current [master branch](https://github.com/openwrt/openwrt/tree/master) without any patches.
+* 21.02.x version without any patches.
 
-To build OpenWRT for Mikrotik hAP ac2 and cAP ac execute:
+## Configuring
+The default target is ipq40xx for Mikrotik hAP ac2 and cAP ac.
+
+You can add new targets by creating files in configs, similar to ipq40xx. A config will get merged
+with common.txt which basically contains all the packages you'd like to have in the image.
+
+To create new configs use
+```
+./build.sh docker config
+```
+which runs OpenWRTs menuconfig. Use the resulting
+output to create new config files with the name of your choice.
+
+## Building firmware images
+
+To build OpenWRT execute:
 ```
 ./build.sh docker firmware
 ```
+
+The default target is `ipq40xx`. If you'd like to use a different target run the script like this:
+```
+TARGET=hap-ac2 ./build.sh docker firmware
+```
+This will use `configs/hap-ac2.txt` as config.
 
 To build a tagged 21.02.x OpenWRT version which supports hAP ac2 and cAP ac use for example:
 ```

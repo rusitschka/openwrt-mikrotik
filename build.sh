@@ -43,6 +43,8 @@ function run_in_docker {
 
 if [ "$1" = "" ]
 then
+    set +x
+    echo
     echo "Usage: $0 (config|docker|firmware)+"
     echo "See https://github.com/rusitschka/openwrt-mikrotik/blob/main/README.md"
     exit 1

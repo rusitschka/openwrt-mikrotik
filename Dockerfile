@@ -48,10 +48,10 @@ ENV OPENWRT_BUILD_DATE=${OPENWRT_BUILD_DATE}
 
 RUN set -eux \
   ; git checkout $OPENWRT_VERSION \
-  ; if [ "$OPENWRT_VERSION" = "master" ] \
-  ; then \
-      wget -q https://github.com/john-tho/openwrt/pull/2.patch -O mikrotik.patch \
-  ; fi \
+  # ; if [ "$OPENWRT_VERSION" = "master" ] \
+  # ; then \
+  #     wget -q https://github.com/john-tho/openwrt/pull/2.patch -O mikrotik.patch \
+  # ; fi \
   ; if [ -e mikrotik.patch ] && ! git am mikrotik.patch \
   ; then \
       git am --show-current-patch \
