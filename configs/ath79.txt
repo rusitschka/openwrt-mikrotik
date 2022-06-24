@@ -1,0 +1,3 @@
+CONFIG_TARGET_ath79=y
+CONFIG_TARGET_ath79_mikrotik=y
+CONFIG_TARGET_ath79_mikrotik_DEVICE_mikrotik_routerboard-952ui-5ac2nd=y
