@@ -33,14 +33,19 @@ TARGET=hap-ac2 ./build.sh docker firmware
 ```
 This will use `configs/hap-ac2.txt` as config.
 
-To build a tagged 21.02.x OpenWRT version which supports hAP ac2 and cAP ac use for example:
+To build the master branch of OpenWRT use:
 ```
-OPENWRT_VERSION=v21.02.1 ./build.sh docker firmware
+OPENWRT_VERSION=master ./build.sh docker firmware
+```
+
+To build a tagged 22.03.0 OpenWRT version which supports hAP ac2 and cAP ac use for example:
+```
+OPENWRT_VERSION=v22.03.0 ./build.sh docker firmware
 ```
 
 To build a branch, use the branch name, e.g.:
 ```
-OPENWRT_VERSION=openwrt-21.02 ./build.sh docker firmware
+OPENWRT_VERSION=openwrt-22.03 ./build.sh docker firmware
 ```
 
 After the script finishes the resulting target builds are
