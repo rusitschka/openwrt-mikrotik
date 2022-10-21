@@ -27,9 +27,9 @@ To build OpenWRT execute:
 
 The default target is `ipq40xx`. If you'd like to use a different target run the script like this:
 ```
-TARGET=hap-ac2 ./build.sh docker firmware
+TARGET=ath79 ./build.sh docker firmware
 ```
-This will use `configs/hap-ac2.txt` as config.
+This will use `configs/ath79.txt` as config.
 
 To build the master branch of OpenWRT use:
 ```
