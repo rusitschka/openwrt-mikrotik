@@ -2,10 +2,8 @@
 
 This script builds OpenWRT via Docker images/containers, i.e. Docker is your only build dependency.
 
-Supported versions of OpenWRT:
-
-* Current [master branch](https://github.com/openwrt/openwrt/tree/master) without any patches.
-* 21.02.x version without any patches.
+Tested versions of OpenWRT:
+* 22.03.2
 
 ## Configuring
 The default target is ipq40xx for Mikrotik hAP ac2 and cAP ac.
