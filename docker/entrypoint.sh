@@ -2,10 +2,11 @@
 
 if [ ! -d .git ]
 then
-    git init .
-    git remote add -t \* -f origin https://github.com/openwrt/openwrt.git
+    git config --global init.defaultBranch main
     git config --global user.email "noreply@example.com"
     git config --global user.name "No Name"
+    git init .
+    git remote add -t \* -f origin https://github.com/openwrt/openwrt.git
 fi
 
 [ -e version ] && rm version
