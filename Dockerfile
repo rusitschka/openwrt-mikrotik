@@ -1,6 +1,7 @@
 FROM ubuntu
 
-WORKDIR /root
+WORKDIR /root/openwrt
+ENV FORCE_UNSAFE_CONFIGURE=1
 
 RUN set -eux \
   ; apt-get update -yqq \
@@ -34,33 +35,7 @@ RUN set -eux \
     wget \
     xsltproc \
     zlib1g-dev \
-  ; git clone https://github.com/openwrt/openwrt.git \
-  ; git config --global user.email "noreply@example.com" \
-  ; git config --global user.name "No Name"
-
-WORKDIR /root/openwrt
-
-ARG OPENWRT_VERSION
-ENV OPENWRT_VERSION=${OPENWRT_VERSION}
-
-ARG OPENWRT_BUILD_DATE
-ENV OPENWRT_BUILD_DATE=${OPENWRT_BUILD_DATE}
-
-RUN set -eux \
-  ; git checkout $OPENWRT_VERSION \
-  # ; if [ "$OPENWRT_VERSION" = "master" ] \
-  # ; then \
-  #     wget -q https://github.com/john-tho/openwrt/pull/2.patch -O mikrotik.patch \
-  # ; fi \
-  ; if [ -e mikrotik.patch ] && ! git am mikrotik.patch \
-  ; then \
-      git am --show-current-patch \
-  ;   exit 1 \
-  ; fi
-
-RUN set -eux \
-  ; ./scripts/feeds update -a \
-  ; ./scripts/feeds install -a
+  ; find /var/cache/ldconfig /var/cache/apt /var/lib/apt/lists /var/log -type f -delete
 
 ADD docker/entrypoint.sh /
 

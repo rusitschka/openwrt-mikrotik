@@ -1,10 +1,11 @@
 #!/bin/bash -ex
 
-DEFAULT_OPENWRT_VERSION="v22.03.2"
+DEFAULT_OPENWRT_VERSION="v22.03.3"
+#DEFAULT_OPENWRT_VERSION="openwrt-22.03"
 #DEFAULT_OPENWRT_VERSION="master"
 
 TARGET="${TARGET:-ipq40xx}"
-IMAGE_NAME="openwrt-$TARGET"
+IMAGE_NAME="openwrt-mikrotik"
 CONFIG="configs/$TARGET.txt"
 OPENWRT_VERSION="${OPENWRT_VERSION:-${DEFAULT_OPENWRT_VERSION}}"
 OPENWRT_BUILD_DATE="$(date '+%Y-%m-%d-%H-%M-%S')"
@@ -19,8 +20,6 @@ function build_docker {
     docker rmi $IMAGE_NAME.build -f || true
     docker build \
         --progress plain \
-        --build-arg OPENWRT_VERSION="$OPENWRT_VERSION" \
-        --build-arg OPENWRT_BUILD_DATE="$OPENWRT_BUILD_DATE" \
         -t $IMAGE_NAME.build .
     docker rmi $IMAGE_NAME -f || true
     docker tag $IMAGE_NAME.build $IMAGE_NAME
@@ -31,13 +30,16 @@ function run_in_docker {
     TARGET_DIR="build/$TARGET"
     mkdir -p downloads
     mkdir -p $TARGET_DIR
+    docker volume create $IMAGE_NAME-root-openwrt || true
     docker rm $IMAGE_NAME -f || true
     time docker run -it --rm \
         --name $IMAGE_NAME \
+        -e OPENWRT_VERSION=$OPENWRT_VERSION \
+        -e OPENWRT_BUILD_DATE=$OPENWRT_BUILD_DATE \
+        -v $IMAGE_NAME-root-openwrt:/root/openwrt/ \
         -v $PWD/$TARGET_DIR:/build \
         -v $PWD/configs/common.txt:/root/openwrt/.config-common \
         -v $PWD/$CONFIG:/root/openwrt/.config-template \
-        -v $PWD/downloads:/root/openwrt/dl/ \
         -v $PWD/files:/root/openwrt/files/ \
         -v $PWD/docker-scripts:/root/openwrt/docker-scripts \
         $IMAGE_NAME \
@@ -56,14 +58,22 @@ fi
 while [ "$1" != "" ]
 do
     case "$1" in
-        firmware)
-            run_in_docker "firmware"
+        clean)
+            docker rm $IMAGE_NAME || true
+            docker rmi $IMAGE_NAME || true
+            docker volume rm $IMAGE_NAME-root-openwrt || true
             ;;
         config)
             run_in_docker "config"
             ;;
         docker)
             build_docker
+            ;;
+        firmware)
+            run_in_docker "firmware"
+            ;;
+        shell)
+            run_in_docker "shell"
             ;;
         *)
             echo "Unsupported command: $1"

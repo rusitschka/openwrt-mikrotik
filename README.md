@@ -52,3 +52,13 @@ file system. The resulting Docker images/containers will be up to
 12G each in size and can be deleted after the build finished.
 
 The whole process takes about 45 minutes on a modern CPU.
+
+To clean the build files and force a fresh next build execute:
+```
+./build.sh clean
+```
+
+To get shell access to the build environment (useful for debugging):
+```
+./build.sh shell
+```
