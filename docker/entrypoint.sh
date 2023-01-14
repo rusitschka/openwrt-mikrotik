@@ -1,7 +1,10 @@
 #!/bin/bash -ex
 
-if [ ! -d .git ]
+if [ -d .git ]
 then
+    git reset --hard
+    git fetch --all
+else
     git config --global init.defaultBranch main
     git config --global user.email "noreply@example.com"
     git config --global user.name "No Name"
