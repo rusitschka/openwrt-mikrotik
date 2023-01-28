@@ -3,7 +3,7 @@
 This script builds OpenWRT via Docker images/containers, i.e. Docker is your only build dependency.
 
 Tested versions of OpenWRT:
-* 22.03.2
+* 22.03.3
 
 ## Configuring
 The default target is ipq40xx for Mikrotik hAP ac2 and cAP ac.
@@ -22,28 +22,28 @@ output to create new config files with the name of your choice.
 
 To build OpenWRT execute:
 ```
-./build.sh docker firmware
+./build.sh
 ```
 
 The default target is `ipq40xx`. If you'd like to use a different target run the script like this:
 ```
-TARGET=ath79 ./build.sh docker firmware
+TARGET=ath79 ./build.sh
 ```
 This will use `configs/ath79.txt` as config.
 
 To build the master branch of OpenWRT use:
 ```
-OPENWRT_VERSION=master ./build.sh docker firmware
+OPENWRT_VERSION=master ./build.sh
 ```
 
 To build a tagged 22.03.0 OpenWRT version which supports hAP ac2 and cAP ac use for example:
 ```
-OPENWRT_VERSION=v22.03.0 ./build.sh docker firmware
+OPENWRT_VERSION=v22.03.0 ./build.sh
 ```
 
 To build a branch, use the branch name, e.g.:
 ```
-OPENWRT_VERSION=openwrt-22.03 ./build.sh docker firmware
+OPENWRT_VERSION=openwrt-22.03 ./build.sh
 ```
 
 After the script finishes the resulting target builds are

@@ -16,7 +16,8 @@ then
     exit 1
 fi
 
-function build_docker {
+function build_docker
+{
     docker rmi $IMAGE_NAME.build -f || true
     docker build \
         --progress plain \
@@ -26,7 +27,13 @@ function build_docker {
     docker rmi $IMAGE_NAME.build -f || true
 }
 
-function run_in_docker {
+function run_in_docker
+{
+    if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" == "" ]]
+    then
+        build_docker
+    fi
+
     TARGET_DIR="build/$TARGET"
     mkdir -p downloads
     mkdir -p $TARGET_DIR
@@ -46,13 +53,18 @@ function run_in_docker {
         ./docker-scripts/$1.sh
 }
 
-if [ "$1" = "" ]
+if [ "$1" = "--help" ]
 then
     set +x
     echo
-    echo "Usage: $0 (config|docker|firmware)+"
-    echo "See https://github.com/rusitschka/openwrt-mikrotik/blob/main/README.md"
-    exit 1
+    echo "For help see https://github.com/rusitschka/openwrt-mikrotik/blob/main/README.md"
+    exit 0
+fi
+
+if [ "$1" = "" ]
+then
+    run_in_docker "firmware"
+    exit 0
 fi
 
 while [ "$1" != "" ]
