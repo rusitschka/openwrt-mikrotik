@@ -17,8 +17,7 @@ RUN set -eux \
     git \
     java-propose-classpath \
     libelf-dev \
-    libncurses5-dev \
-    libncursesw5-dev \
+    libncurses-dev \
     libpam-dev \
     libsnmp-dev \
     libssl-dev \
@@ -36,6 +35,10 @@ RUN set -eux \
     xsltproc \
     zlib1g-dev \
   ; find /var/cache/ldconfig /var/cache/apt /var/lib/apt/lists /var/log -type f -delete
+
+    # bison \
+    # clang \
+    # flex \
 
 ADD docker/entrypoint.sh /
 

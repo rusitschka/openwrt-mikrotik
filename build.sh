@@ -72,8 +72,8 @@ do
     case "$1" in
         clean)
             docker rm $IMAGE_NAME || true
-            docker rmi $IMAGE_NAME || true
-            docker volume rm $IMAGE_NAME-root-openwrt || true
+            docker rmi $IMAGE_NAME -f || true
+            docker volume rm $IMAGE_NAME-root-openwrt -f || true
             ;;
         config)
             run_in_docker "config"
