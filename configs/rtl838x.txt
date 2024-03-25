@@ -1,0 +1,3 @@
+CONFIG_TARGET_realtek=y
+CONFIG_TARGET_realtek_rtl838x=y
+CONFIG_TARGET_realtek_rtl838x_DEVICE_netgear_gs308t-v1=y
