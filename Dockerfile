@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM ubuntu:22.04
 
 WORKDIR /root/openwrt
 ENV FORCE_UNSAFE_CONFIGURE=1
