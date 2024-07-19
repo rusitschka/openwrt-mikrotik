@@ -6,7 +6,3 @@ if ! make -j$(nproc) world
 then
     make V=sc world
 fi
-
-TARGET_DIR="/build/${OPENWRT_BUILD_DATE}_${OPENWRT_VERSION}"
-mkdir -p "$TARGET_DIR"
-cp -a bin/targets/* "$TARGET_DIR"

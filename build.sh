@@ -1,20 +1,13 @@
 #!/bin/bash -ex
 
-DEFAULT_OPENWRT_VERSION="v23.05.3"
+DEFAULT_OPENWRT_VERSION="v23.05.4"
 #DEFAULT_OPENWRT_VERSION="openwrt-22.03"
 #DEFAULT_OPENWRT_VERSION="master"
 
 TARGET="${TARGET:-ipq40xx}"
 IMAGE_NAME="openwrt-mikrotik"
-CONFIG="configs/$TARGET.txt"
 OPENWRT_VERSION="${OPENWRT_VERSION:-${DEFAULT_OPENWRT_VERSION}}"
 OPENWRT_BUILD_DATE="$(date '+%Y-%m-%d-%H-%M-%S')"
-
-if [ ! -e "$CONFIG" ]
-then
-    echo "Invalid target $1: Config $CONFIG not found."
-    exit 1
-fi
 
 function build_docker
 {
@@ -34,23 +27,35 @@ function run_in_docker
         build_docker
     fi
 
-    TARGET_DIR="build/$TARGET"
-    mkdir -p downloads
-    mkdir -p $TARGET_DIR
-    docker volume create $IMAGE_NAME-root-openwrt || true
-    docker rm $IMAGE_NAME -f || true
-    time docker run -it --rm \
-        --name $IMAGE_NAME \
-        -e OPENWRT_VERSION=$OPENWRT_VERSION \
-        -e OPENWRT_BUILD_DATE=$OPENWRT_BUILD_DATE \
-        -v $IMAGE_NAME-root-openwrt:/root/openwrt/ \
-        -v $PWD/$TARGET_DIR:/build \
-        -v $PWD/configs/common.txt:/root/openwrt/.config-common \
-        -v $PWD/$CONFIG:/root/openwrt/.config-template \
-        -v $PWD/files:/root/openwrt/files/ \
-        -v $PWD/docker-scripts:/root/openwrt/docker-scripts \
-        $IMAGE_NAME \
-        ./docker-scripts/$1.sh
+    IFS=','
+    for TARGET in $TARGET
+    do
+        echo "Building target $TARGET"
+        CONFIG="configs/$TARGET.txt"
+        if [ ! -e "$CONFIG" ]
+        then
+            echo "Invalid target $1: Config $CONFIG not found."
+            exit 1
+        fi
+        TARGET_DIR="build/${OPENWRT_BUILD_DATE}_${OPENWRT_VERSION}"
+        mkdir -p downloads
+        mkdir -p $TARGET_DIR
+        docker volume create $IMAGE_NAME-root-openwrt || true
+        docker rm $IMAGE_NAME -f || true
+        time docker run -it --rm \
+            --name $IMAGE_NAME \
+            -e OPENWRT_VERSION=$OPENWRT_VERSION \
+            -e OPENWRT_BUILD_DATE=$OPENWRT_BUILD_DATE \
+            -v $IMAGE_NAME-root-openwrt:/root/openwrt/ \
+            -v $PWD/$TARGET_DIR://root/openwrt/bin/targets/ \
+            -v $PWD/configs/common.txt:/root/openwrt/.config-common \
+            -v $PWD/$CONFIG:/root/openwrt/.config-template \
+            -v $PWD/files:/root/openwrt/files/ \
+            -v $PWD/docker-scripts:/root/openwrt/docker-scripts \
+            $IMAGE_NAME \
+            ./docker-scripts/$1.sh || (mv $TARGET_DIR $TARGET_DIR.failed ; exit 1)
+    done
+    unset IFS
 }
 
 if [ "$1" = "--help" ]

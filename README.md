@@ -38,6 +38,13 @@ TARGET=ath79 ./build.sh
 
 This will use `configs/ath79.txt` as config.
 
+You can also build multiple targets at the same time:
+
+```bash
+TARGET=ath79,rtl838x,ipq40xx ./build.sh
+```
+
+
 To build the master branch of OpenWRT use:
 
 ```bash
