@@ -41,7 +41,7 @@ This will use `configs/ath79.txt` as config.
 You can also build multiple targets at the same time:
 
 ```bash
-TARGET=ath79,rtl838x,ipq40xx ./build.sh
+TARGET=ipq40xx,ath79,rtl838  ./build.sh
 ```
 
 
