@@ -23,8 +23,6 @@ read
 set -x
 
 USER=$(whoami)
-TFTP_ROOT=$(dirname $2)
-TFTP_FILE=$(basename $2)
 
 #ip addr replace 192.168.1.10/24 dev $IFNAME
 #ip link set dev $IFNAME up
