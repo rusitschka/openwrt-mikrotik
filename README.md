@@ -4,7 +4,7 @@ This script builds OpenWRT via Docker images/containers, i.e. Docker is your onl
 
 Tested versions of OpenWRT:
 
-* 23.05.0
+* 24.10.0
 
 ## Configuring
 
@@ -51,16 +51,16 @@ To build the master branch of OpenWRT use:
 OPENWRT_VERSION=master ./build.sh
 ```
 
-To build a tagged 23.05.0 OpenWRT version which supports hAP ac2 and cAP ac use for example:
+To build a tagged 24.10.0 OpenWRT version which supports hAP ac2 and cAP ac use for example:
 
 ```bash
-OPENWRT_VERSION=v23.05.0 ./build.sh
+OPENWRT_VERSION=v24.10.0 ./build.sh
 ```
 
 To build a branch, use the branch name, e.g.:
 
 ```bash
-OPENWRT_VERSION=openwrt-23.05 ./build.sh
+OPENWRT_VERSION=openwrt-24.10 ./build.sh
 ```
 
 After the script finishes the resulting target builds are
