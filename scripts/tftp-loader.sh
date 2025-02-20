@@ -2,7 +2,7 @@
 
 # based on https://openwrt.org/toh/mikrotik/common
 
-if [ -z "$1" ] || [ -z "$2 "]
+if [ -z "$1" ] || [ -z "$2" ]
 then
   echo "Missing parameter(s)!"
   echo "Call with $0 <interface> <sysupgrade file path>"
@@ -24,9 +24,7 @@ set -x
 
 USER=$(whoami)
 
-#ip addr replace 192.168.1.10/24 dev $IFNAME
-#ip link set dev $IFNAME up
-dnsmasq --user=$USER \
+sudo dnsmasq --user=$USER \
     --no-daemon \
     --listen-address 192.168.1.10 \
     --bind-interfaces \
