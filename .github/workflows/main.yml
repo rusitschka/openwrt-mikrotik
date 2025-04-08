@@ -1,4 +1,4 @@
-name: OpenWRT Build for Mikrotik via GitHub Actions
+name: OpenWRT Build for Mikrotik
 on:
   push:
     tags:
@@ -7,43 +7,63 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       matrix:
         target: [ipq40xx, ath79, ramips-mt7621, mvebu-cortexa72, ipq806x]
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+      with:
+        fetch-depth: 0
+
     - name: Setup Docker Buildx
       uses: docker/setup-buildx-action@v3
-    
+      with:
+        driver-opts: network=host
+
     - name: Build firmware
       run: |
+        echo "Kompilace pro target: ${{ matrix.target }}"
         TARGET=${{ matrix.target }} \
         OPENWRT_VERSION=v24.10.0 \
         ./build.sh
-        
-    - name: Upload artifacts
+
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: openwrt-${{ matrix.target }}
-        path: build/${{ matrix.target }}/*.bin
-        include-hidden-files: true  # Pro zahrnutí skrytých souborů
+        name: openwrt-${{ matrix.target }}-${{ github.run_id }}
+        path: |
+          build/${{ matrix.target }}/*.bin
+          build/${{ matrix.target }}/*.elf
+        retention-days: 7
+        include-hidden-files: true
 
   release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - name: Download all artifacts
       uses: actions/download-artifact@v4
-      
+      with:
+        path: artifacts
+
+    - name: Create checksums
+      run: |
+        find artifacts -type f -name '*.bin' -exec sha256sum {} \; > checksums.txt
+        find artifacts -type f -name '*.elf' -exec sha256sum {} \; >> checksums.txt
+
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref }}
         name: OpenWRT ${{ github.ref_name }}
+        body: |
+          **Automatizovaný build OpenWRT pro Mikrotik zařízení**  
+          Čas buildu: ${{ github.run_started_at }}  
+          Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
         files: |
-          **/*.bin
+          artifacts/**/*
+          checksums.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
