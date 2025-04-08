@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Run the Docker image
-      run: chmod +x && ./build.sh shell
+      run: chmod +x * && ./build.sh shell
