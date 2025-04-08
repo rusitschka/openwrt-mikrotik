@@ -1,4 +1,4 @@
-name: OpenWRT Build for Mikrotik
+name: OpenWRT Build for Mikrotik via GitHub Actions
 on:
   push:
     tags:
@@ -16,7 +16,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: Setup Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     
     - name: Build firmware
       run: |
@@ -25,7 +25,25 @@ jobs:
         ./build.sh
         
     - name: Upload artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: openwrt-${{ matrix.target }}
         path: build/${{ matrix.target }}/*.bin
+        include-hidden-files: true  # Pro zahrnutí skrytých souborů
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref }}
+        name: OpenWRT ${{ github.ref_name }}
+        files: |
+          **/*.bin
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
