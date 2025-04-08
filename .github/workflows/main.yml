@@ -1,0 +1,31 @@
+name: OpenWRT Build for Mikrotik
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [ipq40xx, ath79, ramips-mt7621, mvebu-cortexa72, ipq806x]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Docker Buildx
+      uses: docker/setup-buildx-action@v2
+    
+    - name: Build firmware
+      run: |
+        TARGET=${{ matrix.target }} \
+        OPENWRT_VERSION=v24.10.0 \
+        ./build.sh
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: openwrt-${{ matrix.target }}
+        path: build/${{ matrix.target }}/*.bin
