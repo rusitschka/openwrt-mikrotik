@@ -11,7 +11,6 @@ OPENWRT_BUILD_DATE="$(date '+%Y-%m-%d-%H-%M-%S')"
 
 function build_docker
 {
-    docker rmi $IMAGE_NAME.build -f || true
     docker build \
         --progress plain \
         -t $IMAGE_NAME.build .
@@ -22,10 +21,7 @@ function build_docker
 
 function run_in_docker
 {
-    if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" == "" ]]
-    then
-        build_docker
-    fi
+    build_docker
 
     IFS=','
     for TARGET in $TARGET

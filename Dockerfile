@@ -8,6 +8,7 @@ RUN set -eux \
   ; DEBIAN_FRONTEND=noninteractive apt-get install -yqq --no-install-recommends \
     bison \
     build-essential \
+    ca-certificates \
     clang \
     ccache \
     ecj \

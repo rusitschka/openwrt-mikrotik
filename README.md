@@ -81,3 +81,21 @@ To get shell access to the build environment (useful for debugging):
 ```bash
 ./build.sh shell
 ```
+
+## ath10k AQL mitigation
+
+The image includes a test mitigation for ath10k Wi-Fi stalls where the kernel logs
+`ath10k... failed to lookup txq` and clients disconnect or stall. This matches
+[OpenWrt issue #9455](https://github.com/openwrt/openwrt/issues/9455), where
+disabling AQL through debugfs is reported as a workaround.
+
+At boot, `/etc/init.d/ath10k-aql-disable` tries to disable AQL on all radios:
+
+```sh
+for aql in /sys/kernel/debug/ieee80211/phy*/aql_enable; do
+    [ -e "$aql" ] && echo 0 > "$aql"
+done
+```
+
+Treat this as a test mitigation. Monitor whether `ath10k` txq lookup errors,
+Wi-Fi stalls, and client disconnect counts drop after deploying the image.
