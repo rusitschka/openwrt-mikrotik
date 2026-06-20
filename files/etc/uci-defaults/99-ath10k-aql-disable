@@ -1,6 +1,0 @@
-#!/bin/sh
-
-/etc/init.d/ath10k-aql-disable enable
-/etc/init.d/ath10k-aql-disable start
-
-exit 0
