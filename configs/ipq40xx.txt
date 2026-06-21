@@ -3,6 +3,10 @@ CONFIG_TARGET_ipq40xx_mikrotik=y
 CONFIG_TARGET_MULTI_PROFILE=y
 CONFIG_TARGET_DEVICE_ipq40xx_mikrotik_DEVICE_mikrotik_cap-ac=y
 CONFIG_TARGET_DEVICE_ipq40xx_mikrotik_DEVICE_mikrotik_hap-ac2=y
+
+# Use stock ath10k instead of Candela Tech (-ct): -ct caused high packet loss
+# on these devices. Stock ath10k follows OpenWrt/mac80211 backports.
+# Keep smallbuffers because these MikroTik devices are 128 MB RAM class.
 CONFIG_PACKAGE_ath10k-firmware-qca4019=y
 # CONFIG_PACKAGE_ath10k-firmware-qca4019-ct is not set
 # CONFIG_PACKAGE_kmod-ath10k-ct-smallbuffers is not set
