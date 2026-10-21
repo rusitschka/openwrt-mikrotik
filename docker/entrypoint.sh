@@ -19,7 +19,7 @@ git reset --hard
 git am --abort 2>/dev/null || true
 
 PATCHES=(
-    "https://github.com/openwrt/openwrt/pull/23181.patch"
+#     "https://github.com/openwrt/openwrt/pull/23181.patch"
 )
 
 echo "$OPENWRT_BUILD_DATE" > version
