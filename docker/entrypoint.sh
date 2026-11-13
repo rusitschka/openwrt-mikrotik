@@ -19,7 +19,7 @@ git reset --hard
 git am --abort 2>/dev/null || true
 
 PATCHES=(
-#     "https://github.com/openwrt/openwrt/pull/23181.patch"
+    "https://github.com/openwrt/openwrt/pull/26652.patch"
 )
 
 echo "$OPENWRT_BUILD_DATE" > version
@@ -31,6 +31,13 @@ do
     rm /tmp/openwrt.patch
     echo "Patched $PATCH"
 done
+
+# OpenWrt 25.12's hostapd predates EPP support.
+if grep -qx 'PKG_SOURCE_DATE:=2025-08-26' package/network/services/hostapd/Makefile
+then
+    sed -i 's/ && !ap_sta_is_epp(sta)//' \
+        package/network/services/hostapd/patches/896-FT-Configure-the-PTK-after-association-with-full-AP-client-state.patch
+fi
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
