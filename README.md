@@ -99,3 +99,63 @@ done
 
 Treat this as a test mitigation. Monitor whether `ath10k` txq lookup errors,
 Wi-Fi stalls, and client disconnect counts drop after deploying the image.
+
+## Prometheus monitoring
+
+`configs/common.txt` includes `prometheus-node-exporter-lua` plus the filesystem
+and OpenWrt collectors. Dependencies pull in LuaSocket and the matching uHTTPd Lua
+module. `ipq40xx`, `hap-ac2` and `ath79` also include `wifi` and `wifi_stations`;
+`rtl838x` includes neither Wi-Fi collector.
+
+The exporter uses the **unmodified upstream init script and enabled default**.
+Fresh installs use upstream configuration, listening on loopback port 9100 until
+Ansible selects the management interface. No custom build-time disablement,
+startup scripts, firewall helpers or upgrade recovery hooks are installed.
+
+Ansible configures two normal UCI firewall rules: allow the monitoring IPv4 source
+to the management address/port, then drop other traffic to that port (IPv4 and
+IPv6). It stops/disables the exporter before configuration, checks/reloads the
+firewall, then enables and starts the standard service. Each configuration run
+briefly interrupts monitoring. Firewall setup failure leaves it stopped/disabled.
+Once enabled, normal startup/respawn uses upstream behavior with no firewall gate.
+
+Ordinary reboots retain enablement. Settings-preserving sysupgrade retains the
+firewall and exporter configuration under `/etc/config/`; the image's enabled
+default resumes monitoring without another Ansible run. OpenWrt's standard
+disabled-service backup keeps explicitly disabled services disabled. Fresh installs
+still need Ansible to configure remote monitoring.
+Entrance runs image `2026-11-21-08-23-35`, deployed by the operator on 2026-11-21.
+Its old pilot include was replaced with the native Ansible firewall rules and
+monitoring access was verified. Other devices remain undeployed.
+
+Use the single Zabbix template in `ansible-openwrt/zabbix/`. Wi-Fi defaults to on;
+set `{$OPENWRT.WIFI.ENABLED}=0` for Switch. Build output size still needs validation
+before flashing.
+
+### Local integration tests
+
+`tests/prometheus_boot.py` exercises the actual rootfs service-selection code and
+runs the Ansible role against a disposable OpenWrt Docker container. It requires
+the local `openwrt-mikrotik-root-openwrt` source volume, build image
+`openwrt-mikrotik`, and an OpenWrt 25.12.6 ARM64 fixture with `/sbin/init`, fw4 and
+exporter packages. The sibling `ansible-openwrt` checkout needs its existing venv
+and the `community.openwrt`/`community.docker` collections (set
+`ANSIBLE_COLLECTIONS_PATH` if installed outside the default search path). Cached `postgres:17-alpine` supplies an HTTP test peer.
+No production devices are contacted.
+
+With `FIXTURE_IMAGE` set to the local fixture image:
+
+```bash
+set -euo pipefail
+umask 077
+logdir=$(mktemp -d "${TMPDIR:-/tmp}/openwrt-monitoring-tests.XXXXXX")
+logfile="$logdir/tests.log"
+python3 tests/prometheus_boot.py --image "$FIXTURE_IMAGE" 2>&1 | tee "$logfile"
+```
+
+Coverage includes upstream default enablement, fresh loopback startup, saved
+enabled/disabled service state, standard-service reboot, native
+firewall access restrictions, unrelated include/file preservation, native rule
+ownership and pending-edit checks, earlier input/SYN-chain accept rejection,
+failed/interrupted reload and retry, stale live rules and check mode. This does
+not build a complete firmware image or flash hardware.
