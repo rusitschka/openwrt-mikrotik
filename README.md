@@ -124,9 +124,16 @@ firewall and exporter configuration under `/etc/config/`; the image's enabled
 default resumes monitoring without another Ansible run. OpenWrt's standard
 disabled-service backup keeps explicitly disabled services disabled. Fresh installs
 still need Ansible to configure remote monitoring.
-Entrance runs image `2026-11-21-08-23-35`, deployed by the operator on 2026-11-21.
-Its old pilot include was replaced with the native Ansible firewall rules and
-monitoring access was verified. Other devices remain undeployed.
+All seven devices run image `2026-11-21-08-23-35`, flashed by the operator on
+2026-11-21, with the native Prometheus Ansible configuration deployed. APs and
+Gateway reported 15 healthy collectors; Switch reported 13 without Wi-Fi packages.
+Zotac scraping and blocked unauthorized IPv4/IPv6 access were verified. All seven
+hosts are linked to the shared production Zabbix template. Switch still has
+unsupported items for an exporter-advertised nonexistent `switch.1` and retained
+errors on unused Wi-Fi items after an outage; see `ansible-openwrt/zabbix/README.md`.
+Entrance was flashed a second time: exporter settings, enabled service and native
+firewall rules persisted and monitoring resumed without rerunning Ansible.
+Ansible monitoring now defaults to enabled; Switch keeps Wi-Fi explicitly disabled.
 
 Use the single Zabbix template in `ansible-openwrt/zabbix/`. Wi-Fi defaults to on;
 set `{$OPENWRT.WIFI.ENABLED}=0` for Switch. Build output size still needs validation
