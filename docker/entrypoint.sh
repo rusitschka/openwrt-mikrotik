@@ -27,17 +27,32 @@ for PATCH in "${PATCHES[@]}"
 do
     [ -n "$PATCH" ] || continue
     wget -O /tmp/openwrt.patch "$PATCH"
+    PATCH_BASE=$(git rev-parse HEAD)
     git am --3way /tmp/openwrt.patch
     rm /tmp/openwrt.patch
+
+    # OpenWrt 25.12's hostapd predates EPP support. Only adapt this PR's files.
+    if [ "$PATCH" = "https://github.com/openwrt/openwrt/pull/26652.patch" ] &&
+        grep -qx 'PKG_SOURCE_DATE:=2025-08-26' package/network/services/hostapd/Makefile
+    then
+        HOSTAPD_PATCHES=$(git diff --name-only --no-renames --diff-filter=AM \
+            "$PATCH_BASE" HEAD -- package/network/services/hostapd/patches/)
+        while IFS= read -r HOSTAPD_PATCH
+        do
+            [ -n "$HOSTAPD_PATCH" ] || continue
+            if grep -qF 'ap_sta_is_epp(' "$HOSTAPD_PATCH"
+            then
+                sed -i 's/ && !ap_sta_is_epp(sta)//' "$HOSTAPD_PATCH"
+                if grep -qF 'ap_sta_is_epp(' "$HOSTAPD_PATCH"
+                then
+                    echo "Unsupported EPP condition in $HOSTAPD_PATCH; review PR #26652's backport." >&2
+                    exit 1
+                fi
+            fi
+        done <<< "$HOSTAPD_PATCHES"
+    fi
     echo "Patched $PATCH"
 done
-
-# OpenWrt 25.12's hostapd predates EPP support.
-if grep -qx 'PKG_SOURCE_DATE:=2025-08-26' package/network/services/hostapd/Makefile
-then
-    sed -i 's/ && !ap_sta_is_epp(sta)//' \
-        package/network/services/hostapd/patches/896-FT-Configure-the-PTK-after-association-with-full-AP-client-state.patch
-fi
 
 ./scripts/feeds update -a
 ./scripts/feeds install -a
